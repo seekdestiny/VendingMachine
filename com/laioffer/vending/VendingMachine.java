@@ -62,7 +62,6 @@ public class VendingMachine {
 		}
 		
 		Snack item = curSlot.get(curSlot.size() - 1);
-		curSlot.remove(curSlot.size() - 1);
 		return item;
 	}
 	
@@ -75,6 +74,9 @@ public class VendingMachine {
 			System.out.println("Not enough fund!");
 			return money;
 		}
+		
+		List<Snack> curSlot = inventory.get(snack.getCode());
+		curSlot.remove(curSlot.size() - 1);
 		return money - snack.getPrice();	
 	}
 
@@ -82,6 +84,49 @@ public class VendingMachine {
 		Snack snack = collectSnack(snackCode);
 		double change = collectChange(snack, money);
 		return new Bucket(snack, change);
+	}
+	
+	public static void main(String[] args) {
+		VendingMachine myVending = new VendingMachine();
+		List<Snack> supplement = new ArrayList<Snack>();
+		supplement.add(new Popcorn(1, 0.5));
+		supplement.add(new Popcorn(1, 0.5));
+		supplement.add(new Popcorn(1, 1.5));
+		supplement.add(new Popcorn(1, 3.5));
+		supplement.add(new Popcorn(1, 4.0));
+		supplement.add(new Biscuits(2, 4.5));
+		supplement.add(new Biscuits(2, 4.5));
+		supplement.add(new Biscuits(2, 3.5));
+		supplement.add(new Biscuits(2, 3.5));
+		supplement.add(new Biscuits(2, 1.5));
+		myVending.refillVendingMachine(supplement);
+				
+		//Test1 - empty slot
+		Bucket b1 = myVending.collectSnackAndChange(3, 2);
+		
+		//Test2 - wrong code
+		Bucket b2 = myVending.collectSnackAndChange(10, 2);
+		
+		//Test3 - short of slots
+		List<Snack> test = new ArrayList<Snack>();
+		test.add(new Popcorn(10, 1.5));
+		myVending.refillVendingMachine(test);
+		
+		//Test4 - Full slot
+		List<Snack> test1 = new ArrayList<Snack>();
+		for (int i = 1; i <= 13; i++) {
+			test1.add(new Popcorn(3, 1.0));
+		}
+		myVending.refillVendingMachine(test1);
+		
+		//Test5 - Not enough fund
+		myVending.collectSnackAndChange(1, 2);		
+		
+		//Test6 - regular purchase
+		//Expected: get $4.0 Popcorn with change: 0.0
+		Bucket b3 = myVending.collectSnackAndChange(1, 4);
+		System.out.println("get $" + b3.getSnack().getPrice() + " " + 
+						             b3.getSnack().getName() + " with change: " + b3.getChange());				
 	}
 }
 
