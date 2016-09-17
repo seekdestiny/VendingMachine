@@ -80,10 +80,10 @@ public class VendingMachine {
 		return money - snack.getPrice();	
 	}
 
-	public Bucket collectSnackAndChange(int snackCode, double money) {
+	public Bucket<Snack, Double> collectSnackAndChange(int snackCode, double money) {
 		Snack snack = collectSnack(snackCode);
 		double change = collectChange(snack, money);
-		return new Bucket(snack, change);
+		return new Bucket<Snack, Double>(snack, change);
 	}
 	
 	public static void main(String[] args) {
@@ -124,27 +124,9 @@ public class VendingMachine {
 		
 		//Test6 - regular purchase
 		//Expected: get $4.0 Popcorn with change: 0.0
-		Bucket b3 = myVending.collectSnackAndChange(1, 4);
-		System.out.println("get $" + b3.getSnack().getPrice() + " " + 
-						             b3.getSnack().getName() + " with change: " + b3.getChange());				
-	}
-}
-
-class Bucket {
-	Snack snack;
-	double change;
-	
-	Bucket(Snack snack, double change) {
-		this.snack = snack;
-		this.change = change;
-	}
-	
-	public Snack getSnack() {
-		return snack;
-	}
-	
-	public double getChange() {
-		return change;
+		Bucket<Snack, Double> b3 = myVending.collectSnackAndChange(1, 4);
+		System.out.println("get $" + b3.getFirst().getPrice() + " " + 
+						             b3.getFirst().getName() + " with change: " + b3.getSecond());				
 	}
 }
 
